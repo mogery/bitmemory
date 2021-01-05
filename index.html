@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf8">
+    <title>bitmemory</title>
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap');
+
+    * {
+      font-family: 'Roboto Mono', monospace;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #digitDisplay, #digitInput {
+      text-align: center;
+    }
+    </style>
+  </head>
+  <body>
+    <div>
+      <h1 id="digitDisplay">test</h1>
+      <input id="digitInput">
+    </div>
+    <script>
+    var colors = ["#C7CEEA", "#B5EAD7", "#E2F0CB", "#FFDAC1", "#FFB7B2"];
+    
+    var elems = {
+      html: document.getElementsByTagName("html")[0],
+      body: document.body,
+      digitDisplay: document.getElementById("digitDisplay"),
+      digitInput: document.getElementById("digitInput")
+    }
+
+    var noOfDigits = 0;
+    var digits = []
+
+    function genDigits() {
+      digits = new Array(Math.pow(2, noOfDigits)).fill(0).map((x, i) => i)
+    }
+
+    function putDigit() {
+      var i = Math.floor(Math.random() * digits.length);
+      elems.digitDisplay.innerText = digits.splice(i, 1)[0].toString(2).padStart(noOfDigits, 0);
+    }
+
+    function nextStage() {
+      noOfDigits++;
+      elems.body.style.backgroundColor = colors[Math.min(noOfDigits - 1, colors.length - 1)];
+      genDigits();
+      putDigit();
+    }
+
+    function checkForSolve(solve) {
+      var si = parseInt(solve, 10);
+      var vi = parseInt(elems.digitDisplay.innerText, 2);
+
+      if (si == vi) {
+        if (digits.length == 0) {
+          nextStage();
+        } else {
+          putDigit();
+        }
+      }
+    }
+
+    digitInput.addEventListener("keyup", function(event) {
+      if (event.keyCode === 13) {
+        event.preventDefault();
+        checkForSolve(digitInput.value);
+        digitInput.value = "";
+      }
+    })
+
+    nextStage();
+    </script>
+  </body>
+</html>
